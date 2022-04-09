@@ -18,8 +18,7 @@ namespace OmegaWarheadPlugin
                 ev.IsAllowed = false;
                 foreach (Room room in Room.List)
                     room.Color = Color.cyan;
-                string cassie = ("pitch_0.2 .g3 .g3 .g3 pitch_0.9 attention . attention . activating omega warhead . detonation in 3 minutes . please evacuate in helicopter of surface zone or in the breach shelter . please evacuate now . 170 seconds before destruction .g3 . .  .g3 . .  . .g3 . . .g3 . . .g3 . . . . .g3 . . . . .g3 . . . .g3 . . . .g3 . . . .g3 . . . .g3 . . . .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 120 seconds  .g3 . .  .g3 . .  .g3 . .  .g3 . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .  .g3 . . .   .g3 . . .   .g3 . .   .g3 . . .   .g3 . . .   .g3 . . .   .g3 . . .   .g3 . . .   .g3 . . .   .g3 . . .   .g3 . . .   .g3 . . .   .g3 . . .   .g3 . . .   1 minute .g3 .  . .g3 .  . .g3 .  . .g3 .  . .g3 .  . .g3 .  . .g3 .  . .g3 .  . .g3 .  . .g3 .  . .g3 .  . .g3 .  . .g3 .  . .g3 .  . 30 seconds . all checkpoint doors are open . please evacuate . 20 . 19 . 18 . 17 . 16 . 15 . 14 . 13 . 12 . 11 . 10 seconds 9 . 8 . 7 . 6 . 5 . 4 . 3 . 2 . 1 . pitch_0.7 0");
-                Cassie.Message(cassie, false, false);
+                Cassie.Message(Plugin.Instance.Config.Cassie, false, false);
                 Map.Broadcast(10, Plugin.Instance.Config.ActivatedMessage);
                 foreach (Room room in Room.List)
                     room.Color = Color.cyan;
@@ -40,18 +39,19 @@ namespace OmegaWarheadPlugin
                             Timing.CallDelayed(0.2f, Warhead.Detonate);
                         });
                     }
-                    foreach (Player Surface in Player.List.Where(plr => plr.Zone == ZoneType.Surface))
-                        Surface.Kill("Omega Warhead");
-                    foreach (Player Muertos in Player.List.Where(plr => plr.CurrentRoom.Name != "EZ_Shelter"))
-                        Muertos.Kill("Omega Warhead");
+                    foreach (Player Muertos in Player.List)
+                        if (Muertos.CurrentRoom.Type != RoomType.EzShelter)
+                        {
+                            Muertos.Kill("Omega Warhead");
+                        }
+                    foreach (Room room in Room.List)
+                        room.Color = Color.blue;
                 });
                 Timing.CallDelayed(155, () =>
                 {
                     //Map.Broadcast(10, "<color=blue> RESCUE HELICOPTER COMING TO SURFACE </color>");
                     //RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);
                 });
-                foreach (Room room in Room.List)
-                    room.Color = Color.blue;
             }
         }
     }
