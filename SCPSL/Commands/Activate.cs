@@ -26,24 +26,33 @@ namespace OmegaWarheadPlugin.Commands
                     room.Color = Color.cyan;
                 Cassie.Message(Plugin.Instance.Config.Cassie, false, false);
                 Map.Broadcast(10, Plugin.Instance.Config.ActivatedMessage);
-                foreach (Room room in Room.List)
-                    room.Color = Color.cyan;
+                Timing.CallDelayed(150, () =>
+                {
+                    foreach (Door checkpoint in Door.List)
+                    {
+                        if (checkpoint.Type == DoorType.CheckpointEntrance || checkpoint.Type == DoorType.CheckpointLczA || checkpoint.Type == DoorType.CheckpointLczB)
+                        {
+                            checkpoint.IsOpen = true;
+                            checkpoint.Lock(69420, DoorLockType.Warhead);
+                        }
+                    }
+                });
                 Timing.CallDelayed(180, () =>
                 {
-                    foreach (Player Sobrevivientes in Player.List.Where(plr => plr.CurrentRoom.Name == "EZ_Shelter"))
+                    foreach (Player Sobrevivientes in Player.List)
                     {
-                        Sobrevivientes.IsGodModeEnabled = true;
-                        Timing.CallDelayed(1f, () =>
+                        if (Sobrevivientes.CurrentRoom.Type == RoomType.EzShelter)
                         {
-                            Sobrevivientes.IsGodModeEnabled = false;
-                            Sobrevivientes.EnableEffect(EffectType.Flashed, 2);
-                            Sobrevivientes.Position = new Vector3(-53, 988, -50);
-                            Sobrevivientes.EnableEffect(EffectType.Visuals939, 5);
-                        });
-                        Timing.CallDelayed(1.5f, () =>
-                        {
-                            Timing.CallDelayed(0.2f, Warhead.Detonate);
-                        });
+                            Sobrevivientes.IsGodModeEnabled = true;
+                            Timing.CallDelayed(Plugin.Instance.Config.TimeToExplodeAfterCassie - 0.2f, () =>
+                            {
+                                Sobrevivientes.IsGodModeEnabled = false;
+                                Sobrevivientes.EnableEffect(EffectType.Flashed, 2);
+                                Sobrevivientes.Position = new Vector3(-53, 988, -50);
+                                Sobrevivientes.EnableEffect(EffectType.Visuals939, 5);
+                            });
+                        }
+                        Timing.CallDelayed(Plugin.Instance.Config.TimeToExplodeAfterCassie, Warhead.Detonate);
                     }
                     foreach (Player Muertos in Player.List)
                         if (Muertos.CurrentRoom.Type != RoomType.EzShelter)
