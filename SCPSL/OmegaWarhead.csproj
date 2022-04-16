@@ -113,8 +113,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Activate.cs" />
+    <Compile Include="Commands\Stop.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="PlayerE.cs" />
+    <Compile Include="EventHandlers.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
