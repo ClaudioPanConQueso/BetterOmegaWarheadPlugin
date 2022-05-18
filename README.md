@@ -13,9 +13,9 @@ ActivatedMessage | <b><color=red>OMEGA WARHEAD ACTIVATED.</color></b> \nPLEASE E
 
 DetonatedMessage | OMEGA WARHEAD DETONATED | Broadcast that will appear when the omega warhead detonates.
 
+DetonatedMessage | 1 | Time to explode omega warhead after cassie stops countdown
 
 TODO:
-1. Can make people escape in MTF Helicopter to survive omega warhead.
+1. Make people escape in MTF Helicopter to survive omega warhead.
 
-
-Note: This plugin is in beta, so errors can appear. Ty :)
+Note: if you find any bug, pls report it. ty :)
