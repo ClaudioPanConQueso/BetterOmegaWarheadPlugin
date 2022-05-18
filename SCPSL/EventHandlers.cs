@@ -9,7 +9,6 @@ namespace OmegaWarheadPlugin
 {
     class EventHandlers
     {
-
         public void OnWarheadStart(StartingEventArgs ev)
         {
             if(Plugin.Singleton.Config.ReplaceAlpha)
@@ -20,6 +19,7 @@ namespace OmegaWarheadPlugin
         }
         public void OmegaWarhead()
         {
+            Round.IsLocked = true;
             foreach (Room room in Room.List)
                 room.Color = Color.cyan;
             Cassie.Message(Plugin.Singleton.Config.Cassie, false, false);
@@ -35,22 +35,24 @@ namespace OmegaWarheadPlugin
                     }
                 }
             });
-            var handle = Timing.CallDelayed(180, () =>
+            Timing.CallDelayed(179 + Plugin.Singleton.Config.TimeToExplodeAfterCassie, () =>
             {
+                Round.IsLocked = false;
                 foreach (Player Sobrevivientes in Player.List)
                 {
                     if (Sobrevivientes.CurrentRoom.Type == RoomType.EzShelter)
                     {
                         Sobrevivientes.IsGodModeEnabled = true;
-                        Timing.CallDelayed(Plugin.Singleton.Config.TimeToExplodeAfterCassie - 0.2f, () =>
+                        Timing.CallDelayed(0.2f, () =>
                         {
                             Sobrevivientes.IsGodModeEnabled = false;
                             Sobrevivientes.EnableEffect(EffectType.Flashed, 2);
                             Sobrevivientes.Position = new Vector3(-53, 988, -50);
                             Sobrevivientes.EnableEffect(EffectType.Visuals939, 5);
+                            Warhead.Detonate();
+                            Warhead.Shake();
                         });
                     }
-                    Timing.CallDelayed(Plugin.Singleton.Config.TimeToExplodeAfterCassie, Warhead.Detonate);
                 }
                 foreach (Player Muertos in Player.List)
                     if (Muertos.CurrentRoom.Type != RoomType.EzShelter)
