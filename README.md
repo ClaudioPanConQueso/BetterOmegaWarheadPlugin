@@ -16,6 +16,3 @@ DetonatedMessage | OMEGA WARHEAD DETONATED | Broadcast that will appear when the
 
 TODO:
 1. Can make people escape in MTF Helicopter to survive omega warhead.
-
-
-Note: This plugin is in beta, so errors can appear. Ty :)
