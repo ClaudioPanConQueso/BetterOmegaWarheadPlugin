@@ -16,11 +16,15 @@ namespace OmegaWarheadPlugin
 
         public override void OnEnabled()
         {
-            RegisterEvents();
+            Plugin.Singleton = this;
+            this.RegisterEvents();
+            base.OnEnabled();
         }
         public override void OnDisabled()
         {
-            UnregisterEvents();
+            Plugin.Singleton = null;
+            this.UnregisterEvents();
+            base.OnDisabled();
         }
         public void RegisterEvents()
         {
