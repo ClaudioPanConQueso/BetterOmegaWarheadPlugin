@@ -13,6 +13,9 @@ ActivatedMessage | <b><color=red>OMEGA WARHEAD ACTIVATED.</color></b> \nPLEASE E
 
 DetonatedMessage | OMEGA WARHEAD DETONATED | Broadcast that will appear when the omega warhead detonates.
 
+StopCassie | pitch_0.9 Omega Warhead detonation stopped | Cassie message when omega warhead is stopped
+
+TimeToExplodeAfterCassie | 1 | Time to make omega warhead explode after cassie message.
 
 TODO:
 1. Can make people escape in MTF Helicopter to survive omega warhead.
