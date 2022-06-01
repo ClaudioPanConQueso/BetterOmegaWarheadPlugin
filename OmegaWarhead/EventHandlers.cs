@@ -28,7 +28,7 @@ namespace OmegaWarheadPlugin
         public void StopOmega()
         {
             Cassie.Clear();
-            Cassie.Message("pitch_0.9 Omega Warhead detonation stopped", false, false);
+            Cassie.Message(Plugin.Singleton.Config.StopCassie, false, false);
             foreach (var coroutine in Plugin.Singleton.handler.Coroutines)
                 Timing.KillCoroutines(coroutine);
             foreach (Room room in Room.List)
