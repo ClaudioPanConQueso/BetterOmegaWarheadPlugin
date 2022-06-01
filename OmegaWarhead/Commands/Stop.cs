@@ -2,6 +2,8 @@
 using System;
 namespace OmegaWarheadPlugin.Commands
 {
+    [CommandHandler(typeof(RemoteAdminCommandHandler))]
+    [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Stop : ICommand
     {
         public string Command { get; } = "stopomega";
@@ -9,16 +11,15 @@ namespace OmegaWarheadPlugin.Commands
         public string Description { get; } = "stops the Omega Warhead.";
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            // TO-DO
             if (sender.CheckPermission(PlayerPermissions.WarheadEvents))
             {
-                //Cassie.Message("Omega Warhead detonation cancelled");
+                Plugin.Singleton.handler.StopOmega();
                 response = "Omega Warhead stopped.";
                 return false;
             }
             else
             {
-                response = "You need Warhead Events permissions to use this commands";
+                response = "You need Warhead Events permissions to use this command";
                 return true;
             }
         }

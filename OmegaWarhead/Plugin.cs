@@ -29,11 +29,13 @@ namespace OmegaWarheadPlugin
         public void RegisterEvents()
         {
             handler = new EventHandlers();
+            Exiled.Events.Handlers.Server.RestartingRound += handler.OnRestartingRound;
             Exiled.Events.Handlers.Warhead.Starting += handler.OnWarheadStart;
         }
 
         public void UnregisterEvents()
         {
+            Exiled.Events.Handlers.Server.RestartingRound -= handler.OnRestartingRound;
             Exiled.Events.Handlers.Warhead.Starting -= handler.OnWarheadStart;
             handler = null;
         }

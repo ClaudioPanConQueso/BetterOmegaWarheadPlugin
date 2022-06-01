@@ -23,7 +23,7 @@ namespace OmegaWarheadPlugin.Commands
             }
             else
             {
-                response = "You need Warhead Events permissions to use this commands";
+                response = "You need Warhead Events permissions to use this command";
                 return true;
             }
         }

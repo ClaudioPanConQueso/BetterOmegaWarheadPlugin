@@ -2,6 +2,7 @@
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using MEC;
+using System.Collections.Generic;
 using UnityEngine;
 using Map = Exiled.API.Features.Map;
 
@@ -9,6 +10,13 @@ namespace OmegaWarheadPlugin
 {
     class EventHandlers
     {
+        public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
+        public void OnRestartingRound()
+        {
+            foreach (var coroutine in Coroutines)
+                Timing.KillCoroutines(coroutine);
+            Coroutines.Clear();
+        }
         public void OnWarheadStart(StartingEventArgs ev)
         {
             if (Plugin.Singleton.Config.ReplaceAlpha)
@@ -17,17 +25,24 @@ namespace OmegaWarheadPlugin
                 OmegaWarhead();
             }
         }
+        public void StopOmega()
+        {
+            Cassie.Clear();
+            Cassie.Message("pitch_0.9 Omega Warhead detonation stopped", false, false);
+            foreach (var coroutine in Plugin.Singleton.handler.Coroutines)
+                Timing.KillCoroutines(coroutine);
+            foreach (Room room in Room.List)
+                room.Color = Color.white;
+        }
         public void OmegaWarhead()
         {
-            Round.IsLocked = true;
-
             foreach (Room room in Room.List)
                 room.Color = Color.cyan;
 
             Cassie.Message(Plugin.Singleton.Config.Cassie, false, false);
             Map.Broadcast(10, Plugin.Singleton.Config.ActivatedMessage);
 
-            Timing.CallDelayed(150, () =>
+            Coroutines.Add(Timing.CallDelayed(150, () =>
             {
                 foreach (Door checkpoint in Door.List)
                 {
@@ -37,11 +52,10 @@ namespace OmegaWarheadPlugin
                         checkpoint.Lock(69420, DoorLockType.Warhead);
                     }
                 }
-            });
+            }));
 
-            Timing.CallDelayed(179 + Plugin.Singleton.Config.TimeToExplodeAfterCassie, () =>
+            Coroutines.Add(Timing.CallDelayed(179 + Plugin.Singleton.Config.TimeToExplodeAfterCassie, () =>
             {
-                Round.IsLocked = false;
                 foreach (Player People in Player.List)
                 {
                     if (People.CurrentRoom.Type == RoomType.EzShelter)
@@ -65,7 +79,7 @@ namespace OmegaWarheadPlugin
 
                 foreach (Room room in Room.List)
                     room.Color = Color.blue;
-            });
+            }));
 
             //TO-DO
             /*Timing.CallDelayed(155, () =>
