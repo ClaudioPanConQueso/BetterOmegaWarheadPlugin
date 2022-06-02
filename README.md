@@ -15,4 +15,4 @@ DetonatedMessage | OMEGA WARHEAD DETONATED | Broadcast that will appear when the
 
 
 TODO:
-1. Can make people escape in MTF Helicopter to survive omega warhead.
+1. Make people able to escape in MTF Helicopter to survive omega warhead.
