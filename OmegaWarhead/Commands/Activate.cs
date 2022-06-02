@@ -1,5 +1,6 @@
 ﻿using CommandSystem;
 using System;
+using Exiled.Permissions.Extensions;
 
 namespace OmegaWarheadPlugin.Commands
 {
@@ -15,11 +16,19 @@ namespace OmegaWarheadPlugin.Commands
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (sender.CheckPermission(PlayerPermissions.WarheadEvents))
+            if (sender.CheckPermission(Plugin.Singleton.Config.Permissions))
             {
-                Plugin.Singleton.handler.OmegaWarhead();
-                response = "Omega Warhead activated.";
-                return false;
+                if (!Plugin.Singleton.handler.OmegaActivated)
+                {
+                    Plugin.Singleton.handler.OmegaWarhead();
+                    response = "Omega Warhead activated.";
+                    return false;
+                }
+                else
+                {
+                    response = "Omega Warhead is already activated.";
+                    return false;
+                }
             }
             else
             {

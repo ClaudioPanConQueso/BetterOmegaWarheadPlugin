@@ -1,4 +1,5 @@
 ﻿using CommandSystem;
+using Exiled.Permissions.Extensions;
 using System;
 namespace OmegaWarheadPlugin.Commands
 {
@@ -11,11 +12,19 @@ namespace OmegaWarheadPlugin.Commands
         public string Description { get; } = "stops the Omega Warhead.";
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (sender.CheckPermission(PlayerPermissions.WarheadEvents))
+            if (sender.CheckPermission(Plugin.Singleton.Config.Permissions))
             {
-                Plugin.Singleton.handler.StopOmega();
-                response = "Omega Warhead stopped.";
-                return false;
+                if (Plugin.Singleton.handler.OmegaActivated)
+                {
+                    Plugin.Singleton.handler.StopOmega();
+                    response = "Omega Warhead stopped.";
+                    return false;
+                }
+                else
+                {
+                    response = "Omega Warhead is already stopped.";
+                    return false;
+                }
             }
             else
             {

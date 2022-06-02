@@ -10,11 +10,13 @@ namespace OmegaWarheadPlugin
 {
     class EventHandlers
     {
+        public bool OmegaActivated = false;
         public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
         public void OnRestartingRound()
         {
             foreach (var coroutine in Coroutines)
                 Timing.KillCoroutines(coroutine);
+            OmegaActivated = false;
             Coroutines.Clear();
         }
         public void OnWarheadStart(StartingEventArgs ev)
@@ -24,18 +26,24 @@ namespace OmegaWarheadPlugin
                 ev.IsAllowed = false;
                 OmegaWarhead();
             }
+            if (OmegaActivated)
+            {
+                ev.IsAllowed = false;
+            }
         }
         public void StopOmega()
         {
+            OmegaActivated = false;
             Cassie.Clear();
             Cassie.Message(Plugin.Singleton.Config.StopCassie, false, false);
             foreach (var coroutine in Plugin.Singleton.handler.Coroutines)
                 Timing.KillCoroutines(coroutine);
             foreach (Room room in Room.List)
-                room.Color = Color.white;
+                room.ResetColor();
         }
         public void OmegaWarhead()
         {
+            OmegaActivated = true;
             foreach (Room room in Room.List)
                 room.Color = Color.cyan;
 
