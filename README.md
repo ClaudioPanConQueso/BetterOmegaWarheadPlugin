@@ -17,7 +17,3 @@ StopCassie | pitch_0.9 Omega Warhead detonation stopped | Cassie message when om
 TimeToExplodeAfterCassie | 1 | Time to make omega warhead explode after cassie message.
 
 Permissions | omegawarhead | Permissions of the plugin.
-
-
-TODO:
-1. Make people able to escape in MTF Helicopter to survive omega warhead.
