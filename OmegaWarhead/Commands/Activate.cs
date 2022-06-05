@@ -1,6 +1,6 @@
 ﻿using CommandSystem;
-using System;
 using Exiled.Permissions.Extensions;
+using System;
 
 namespace OmegaWarheadPlugin.Commands
 {
@@ -16,7 +16,7 @@ namespace OmegaWarheadPlugin.Commands
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (sender.CheckPermission(Plugin.Singleton.Config.Permissions))
+            if (sender.CheckPermission("omegawarhead"))
             {
                 if (!Plugin.Singleton.handler.OmegaActivated)
                 {

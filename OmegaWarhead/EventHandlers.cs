@@ -2,6 +2,7 @@
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using MEC;
+using Respawning;
 using System.Collections.Generic;
 using UnityEngine;
 using Map = Exiled.API.Features.Map;
@@ -12,10 +13,12 @@ namespace OmegaWarheadPlugin
     {
         public bool OmegaActivated = false;
         public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
+        public List<Player> HelikopterSurvivors = new List<Player>();
         public void OnRestartingRound()
         {
             foreach (var coroutine in Coroutines)
                 Timing.KillCoroutines(coroutine);
+            HelikopterSurvivors.Clear();
             OmegaActivated = false;
             Coroutines.Clear();
         }
@@ -35,6 +38,7 @@ namespace OmegaWarheadPlugin
         {
             OmegaActivated = false;
             Cassie.Clear();
+            HelikopterSurvivors.Clear();
             Cassie.Message(Plugin.Singleton.Config.StopCassie, false, false);
             foreach (var coroutine in Plugin.Singleton.handler.Coroutines)
                 Timing.KillCoroutines(coroutine);
@@ -64,6 +68,17 @@ namespace OmegaWarheadPlugin
 
             Coroutines.Add(Timing.CallDelayed(179 + Plugin.Singleton.Config.TimeToExplodeAfterCassie, () =>
             {
+                Timing.CallDelayed(4, () =>
+                {
+                    foreach(Player Helikopter in Player.List)
+                        if (HelikopterSurvivors.Contains(Helikopter))
+                        {
+                            Helikopter.DisableAllEffects();
+                            Helikopter.Scale = new Vector3(1, 1, 1);
+                            Helikopter.Position = new Vector3(178, 1000, -59);
+                            Timing.CallDelayed(2, HelikopterSurvivors.Clear);
+                        }
+                });
                 foreach (Player People in Player.List)
                 {
                     if (People.CurrentRoom.Type == RoomType.EzShelter)
@@ -79,7 +94,7 @@ namespace OmegaWarheadPlugin
                             Warhead.Shake();
                         });
                     }
-                    else
+                    else if(!HelikopterSurvivors.Contains(People))
                     {
                         People.Kill("Omega Warhead");
                     }
@@ -89,8 +104,8 @@ namespace OmegaWarheadPlugin
                     room.Color = Color.blue;
             }));
 
-            //TO-DO
-            /*Timing.CallDelayed(155, () =>
+            //Don't bully me pls
+            Coroutines.Add(Timing.CallDelayed(158, () =>
             {
                 Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "10");
                 Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "9");
@@ -102,8 +117,25 @@ namespace OmegaWarheadPlugin
                 Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "3");
                 Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "2");
                 Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "1");
+                Timing.CallDelayed(12, () =>
+                {
+                    Vector3 HelicopterZone = new Vector3(178, 993, -59);
+                    foreach (Player player in Player.List)
+                        if (Vector3.Distance(player.Position, HelicopterZone) <= 10)
+                        {
+                            player.Broadcast(4, Plugin.Singleton.Config.HelicopterEscape);
+                            player.Position = new Vector3(293, 978, -52);
+                            player.Scale = new Vector3(0, 0, 0);
+                            player.EnableEffect(EffectType.Flashed, 12);
+                            HelikopterSurvivors.Add(player);
+                            Timing.CallDelayed(0.5f, () =>
+                            {
+                                player.EnableEffect(EffectType.Ensnared);
+                            });
+                        }
+                });
                 RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);
-            });*/
+            }));
         }
     }
 }

@@ -12,7 +12,7 @@ namespace OmegaWarheadPlugin.Commands
         public string Description { get; } = "stops the Omega Warhead.";
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (sender.CheckPermission(Plugin.Singleton.Config.Permissions))
+            if (sender.CheckPermission("omegawarhead"))
             {
                 if (Plugin.Singleton.handler.OmegaActivated)
                 {
