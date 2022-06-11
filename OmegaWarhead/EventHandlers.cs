@@ -12,30 +12,41 @@ namespace OmegaWarheadPlugin
     class EventHandlers
     {
         public bool OmegaActivated = false;
+        public bool OmegaDetonated = false;
         public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
         public List<Player> HelikopterSurvivors = new List<Player>();
+
         public void OnRestartingRound()
         {
             foreach (var coroutine in Coroutines)
                 Timing.KillCoroutines(coroutine);
             HelikopterSurvivors.Clear();
+            OmegaDetonated = false;
             OmegaActivated = false;
             Coroutines.Clear();
         }
+
+        public void OnInteractingElevator(InteractingElevatorEventArgs ev)
+        {
+            if (OmegaDetonated) ev.IsAllowed = false;
+        }
+
         public void OnWarheadStart(StartingEventArgs ev)
         {
-            if (Plugin.Singleton.Config.ReplaceAlpha)
+            if (Plugin.Singleton.Config.ReplaceAlpha && !OmegaActivated)
             {
                 ev.IsAllowed = false;
                 OmegaWarhead();
             }
-            if (OmegaActivated)
+            if (OmegaActivated || OmegaDetonated)
             {
                 ev.IsAllowed = false;
             }
         }
+
         public void StopOmega()
         {
+            OmegaDetonated = false;
             OmegaActivated = false;
             Cassie.Clear();
             HelikopterSurvivors.Clear();
@@ -45,6 +56,7 @@ namespace OmegaWarheadPlugin
             foreach (Room room in Room.List)
                 room.ResetColor();
         }
+
         public void OmegaWarhead()
         {
             OmegaActivated = true;
@@ -68,19 +80,10 @@ namespace OmegaWarheadPlugin
 
             Coroutines.Add(Timing.CallDelayed(179 + Plugin.Singleton.Config.TimeToExplodeAfterCassie, () =>
             {
-                Timing.CallDelayed(4, () =>
-                {
-                    foreach(Player Helikopter in Player.List)
-                        if (HelikopterSurvivors.Contains(Helikopter))
-                        {
-                            Helikopter.DisableAllEffects();
-                            Helikopter.Scale = new Vector3(1, 1, 1);
-                            Helikopter.Position = new Vector3(178, 1000, -59);
-                            Timing.CallDelayed(2, HelikopterSurvivors.Clear);
-                        }
-                });
+                OmegaDetonated = true;
+                foreach (Room room in Room.List)
+                    room.Color = Color.blue;
                 foreach (Player People in Player.List)
-                {
                     if (People.CurrentRoom.Type == RoomType.EzShelter)
                     {
                         People.IsGodModeEnabled = true;
@@ -94,34 +97,32 @@ namespace OmegaWarheadPlugin
                             Warhead.Shake();
                         });
                     }
-                    else if(!HelikopterSurvivors.Contains(People))
+                    else if (!HelikopterSurvivors.Contains(People))
                     {
                         People.Kill("Omega Warhead");
                     }
-                }
-
-                foreach (Room room in Room.List)
-                    room.Color = Color.blue;
+                Timing.CallDelayed(4, () =>
+                {
+                    foreach (Player Helikopter in Player.List)
+                        if (HelikopterSurvivors.Contains(Helikopter))
+                        {
+                            Helikopter.DisableAllEffects();
+                            Helikopter.Scale = new Vector3(1, 1, 1);
+                            Helikopter.Position = new Vector3(178, 1000, -59);
+                            Timing.CallDelayed(2, HelikopterSurvivors.Clear);
+                        }
+                });
             }));
 
-            //Don't bully me pls
             Coroutines.Add(Timing.CallDelayed(158, () =>
             {
-                Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "10");
-                Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "9");
-                Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "8");
-                Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "7");
-                Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "6");
-                Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "5");
-                Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "4");
-                Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "3");
-                Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "2");
-                Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + "1");
+                for (int i = 10; i > 0; i--)
+                    Map.Broadcast(1, Plugin.Singleton.Config.HelicopterMessage + i);
                 Timing.CallDelayed(12, () =>
                 {
                     Vector3 HelicopterZone = new Vector3(178, 993, -59);
                     foreach (Player player in Player.List)
-                        if (Vector3.Distance(player.Position, HelicopterZone) <= 10)
+                        if (Vector3.Distance(player.Position, HelicopterZone) <= 12)
                         {
                             player.Broadcast(4, Plugin.Singleton.Config.HelicopterEscape);
                             player.Position = new Vector3(293, 978, -52);

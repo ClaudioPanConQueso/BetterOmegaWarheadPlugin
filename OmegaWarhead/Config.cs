@@ -13,7 +13,7 @@ namespace OmegaWarheadPlugin
         [Description("Broadcast that will appear when the player escapes in the helicopter")]
         public string HelicopterEscape { get; set; } = "You escaped in the helicopter";
         [Description("Broadcast that will appear when the omega warhead is activated.")]
-        public string ActivatedMessage { get; set; } = "<b><color=red>OMEGA WARHEAD ACTIVATED.</color></b> \nPLEASE EVACUATE IN BREACH SHELTER.";
+        public string ActivatedMessage { get; set; } = "<b><color=red>OMEGA WARHEAD ACTIVATED.</color></b> \nPLEASE EVACUATE IN BREACH SHELTER OR IN THE HELICOPTER.";
         [Description("Cassie message when omega warhead is stopped")]
         public string StopCassie { get; set; } = "pitch_0.9 Omega Warhead detonation stopped";
         [Description("Cassie message of omega warhead(Not recommended to modify this)")]
