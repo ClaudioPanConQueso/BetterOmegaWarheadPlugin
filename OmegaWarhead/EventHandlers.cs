@@ -63,6 +63,7 @@ namespace OmegaWarheadPlugin
             foreach (Room room in Room.List)
                 room.Color = Color.cyan;
 
+            Cassie.Clear();
             Cassie.Message(Plugin.Singleton.Config.Cassie, false, false);
             Map.Broadcast(10, Plugin.Singleton.Config.ActivatedMessage);
 
