@@ -51,7 +51,7 @@ namespace OmegaWarheadPlugin
             Cassie.Clear();
             HelikopterSurvivors.Clear();
             Cassie.Message(Plugin.Singleton.Config.StopCassie, false, false);
-            foreach (var coroutine in Plugin.Singleton.handler.Coroutines)
+            foreach (var coroutine in Coroutines)
                 Timing.KillCoroutines(coroutine);
             foreach (Room room in Room.List)
                 room.ResetColor();
@@ -61,7 +61,7 @@ namespace OmegaWarheadPlugin
         {
             OmegaActivated = true;
             foreach (Room room in Room.List)
-                room.Color = Color.cyan;
+                room.Color = Color.blue;
 
             Cassie.Clear();
             Cassie.Message(Plugin.Singleton.Config.Cassie, false, false);
@@ -83,7 +83,7 @@ namespace OmegaWarheadPlugin
             {
                 OmegaDetonated = true;
                 foreach (Room room in Room.List)
-                    room.Color = Color.blue;
+                    room.Color = Color.cyan;
                 foreach (Player People in Player.List)
                     if (People.CurrentRoom.Type == RoomType.EzShelter)
                     {
@@ -94,7 +94,6 @@ namespace OmegaWarheadPlugin
                             People.EnableEffect(EffectType.Flashed, 2);
                             People.Position = new Vector3(-53, 988, -50);
                             People.EnableEffect(EffectType.Visuals939, 5);
-                            Warhead.Detonate();
                             Warhead.Shake();
                         });
                     }
