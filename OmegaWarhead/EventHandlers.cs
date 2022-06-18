@@ -94,7 +94,6 @@ namespace OmegaWarheadPlugin
                             People.EnableEffect(EffectType.Flashed, 2);
                             People.Position = new Vector3(-53, 988, -50);
                             People.EnableEffect(EffectType.Visuals939, 5);
-                            Warhead.Shake();
                         });
                     }
                     else if (!HelikopterSurvivors.Contains(People))
