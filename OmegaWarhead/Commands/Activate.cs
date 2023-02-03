@@ -2,21 +2,21 @@
 using Exiled.Permissions.Extensions;
 using System;
 
-namespace OmegaWarheadPlugin.Commands
+namespace BetterOmegaWarhead.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Activate : ICommand
     {
-        public string Command { get; } = "activateomega";
+        public string Command { get; } = "activateomegawarhead";
 
-        public string[] Aliases { get; } = null;
+        public string[] Aliases { get; } = { "activateomega", "activateow", "aow" };
 
         public string Description { get; } = "Activates the Omega Warhead.";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (sender.CheckPermission(Plugin.Singleton.Config.Permissions))
+            if (sender.CheckPermission("omegawarhead"))
             {
                 if (!Plugin.Singleton.handler.OmegaActivated)
                 {
@@ -32,7 +32,7 @@ namespace OmegaWarheadPlugin.Commands
             }
             else
             {
-                response = "You need Warhead Events permissions to use this command";
+                response = $"You need {Plugin.Singleton.Config.Permissions} permissions to use this command!";
                 return true;
             }
         }
